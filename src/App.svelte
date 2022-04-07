@@ -1,22 +1,19 @@
 <script>
-	const getData = async (year, test) => {
-		const data = await fetch(`https://raw.githubusercontent.com/shellawa/scoreScraper/master/data/${year}/${test}.json`)
-		return data.json()
+	import Table from "./Components/Table.svelte"
+
+	async function ksclFetch(year, exam) {
+		const response = await fetch(
+			`https://raw.githubusercontent.com/shellawa/scoreScraper/master/data/${year}/${exam}-half.json`
+		)
+		const data = await response.json()
+		return data
 	}
 </script>
 
-<div class="container">
-{#await getData("2021","1")}
-	<p>waitin</p>
-{:then data}
-	<table class="table table-striped">
-		{#each data as score}
-			<tr>
-				{#each score as info}
-					<td>{info}</td>
-				{/each}
-			</tr>
-		{/each}
-	</table>
+{#await ksclFetch("2021", '1')}
+	waitin...
+{:then data} 
+	<Table data={data} />
+{:catch}
+	<p>Error</p>
 {/await}
-</div>
