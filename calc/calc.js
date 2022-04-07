@@ -1,5 +1,6 @@
 const excelToJson = require('convert-excel-to-json')
 const fs = require('fs')
+const moment = require('moment')
 
 function calc(year, exam) {
     let json = excelToJson({
@@ -13,7 +14,7 @@ function calc(year, exam) {
     json = json[Object.keys(json)[0]]
 
     // map for better file size and svelte each stuffs
-    let mapped = json.map(({ A, B, C, D, E, F, G, H, I, J, K, L, M }) => ([B, C, D, E, F, G, H, I, J, K, L, M]))
+    let mapped = json.map(({ A, B, C, D, E, F, G, H, I, J, K, L, M }) => ([B, C, `${moment(D).add(1, "day").locale("vi").format("L")}`, E, F, G, H, I, J, K, L, M]))
 
     // fix dumb excel bug .10 to Oct *sign..
     mapped.forEach((score, index) => {
