@@ -68,8 +68,10 @@ function calc(year, exam) {
             light.quarter.push(mapped[i])
         }
     }
-    
+
     fs.writeFileSync(`./data/${year}/${exam}.json`, JSON.stringify(mapped))
+    fs.writeFileSync(`./data/${year}/${exam}-half.json`, JSON.stringify(light.half))
+    fs.writeFileSync(`./data/${year}/${exam}-quarter.json`, JSON.stringify(light.quarter))
 }
 
 fs.readdirSync("./calc/sheets").forEach(file => {
