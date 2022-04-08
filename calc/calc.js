@@ -2,7 +2,11 @@ const excelToJson = require('convert-excel-to-json')
 const fs = require('fs')
 const moment = require('moment')
 
-function calc(year, exam) {
+const normalize = (text) => {
+    return text.normalize("NFD").replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').replace(/ /g, '').toLowerCase()
+} 
+
+async function calc(year, exam) {
     let json = excelToJson({
         sourceFile: `./calc/sheets/${year}-${exam}.xlsx`,
         header: {
@@ -10,7 +14,6 @@ function calc(year, exam) {
         }
     })
 
-    //didn't know that there can be multiple sheets in an excel file
     json = json[Object.keys(json)[0]]
 
     // map for better file size and svelte each stuffs
@@ -51,6 +54,21 @@ function calc(year, exam) {
     //     return 0;
     // });
     // needless because the orginal excel is well-sorted tbh
+
+    //indexes
+    let indexes = []
+    for await (const score of mapped) {
+        if (!indexes.some(index => index.name === normalize(score[4]))) {
+            indexes.push({
+                name: normalize(score[4]),
+                classes: []
+            })
+        }
+        if (!indexes.some(index => index.name === normalize(score[4]) && index.classes.includes(score[3]))) {
+            indexes[indexes.findIndex(index => index.name === normalize(score[4]))].classes.push(score[3])
+        }
+    } 
+    mapped.unshift(indexes)
 
     // ~7000 rows *sign..
     let light = {

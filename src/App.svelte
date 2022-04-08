@@ -2,18 +2,21 @@
 	import Table from "./Components/Table.svelte"
 
 	async function ksclFetch(year, exam) {
-		const response = await fetch(
-			`https://raw.githubusercontent.com/shellawa/scoreScraper/master/data/${year}/${exam}-half.json`
-		)
-		const data = await response.json()
-		return data
+		let response = await fetch(`https://raw.githubusercontent.com/shellawa/scoreScraper/master/data/${year}/${exam}-half.json`).then(res => res.json())
+		let indexes = response[0]
+		response.shift()
+		return {
+			indexes: indexes,
+			data: response
+		}
 	}
 </script>
 
 {#await ksclFetch("2021", '1')}
 	waitin...
-{:then data} 
-	<Table data={data} />
-{:catch}
-	<p>Error</p>
+{:then response}
+	<Table data={response.data} />
+{:catch error}
+	<p>Error!<p>
+	<p>{error}</p>
 {/await}
