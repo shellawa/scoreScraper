@@ -58,14 +58,14 @@ async function calc(year, exam) {
     //indexes
     let indexes = []
     for await (const score of mapped) {
-        if (!indexes.some(index => index.name === normalize(score[4]))) {
+        if (!indexes.some(index => index.name === score[4])) {
             indexes.push({
-                name: normalize(score[4]),
+                name: score[4],
                 classes: []
             })
         }
-        if (!indexes.some(index => index.name === normalize(score[4]) && index.classes.includes(score[3]))) {
-            indexes[indexes.findIndex(index => index.name === normalize(score[4]))].classes.push(score[3])
+        if (!indexes.some(index => index.name === score[4] && index.classes.includes(score[3]))) {
+            indexes[indexes.findIndex(index => index.name === score[4])].classes.push(score[3])
         }
     } 
     mapped.unshift(indexes)
